@@ -23,7 +23,7 @@ class PlateController extends Controller
 
     public function store(StorePlatRequest $request)
     {
-        $this->authorize('create', Plate::class);
+        $this->authorize('admin'); 
 
         $data = $request->validated();
 
@@ -48,7 +48,7 @@ class PlateController extends Controller
 
     public function update(UpdatePlatRequest $request, Plate $plate)
     {
-        $this->authorize('update', $plate);
+        $this->authorize('admin');
 
         $data = $request->validated();
 
@@ -68,7 +68,7 @@ class PlateController extends Controller
 
     public function destroy(Plate $plate)
     {
-        $this->authorize('delete', $plate);
+        $this->authorize('admin');
         if ($plate->image) Storage::disk('cloudinary')->delete($plate->image);
         $plate->delete();
         return response()->json(['message' => 'Plate deleted']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -19,17 +20,18 @@ class AuthController extends Controller
             'dietary_tags.*' => 'in:vegan,no_sugar,no_cholesterol,gluten_free,no_lactose',
         ]);
 
+        $data = $request->validated();
         $user = User::create([
-            'name'         => $request->name,
-            'email'        => $request->email,
-            'password'     => Hash::make($request->password),
+            'name'         => $data['name'],
+            'email'        => $data['email'],
+            'password'     => Hash::make($data['password']),
             'role'         => User::count() === 0 ? 'admin' : 'client',
-            'dietary_tags' => $request->dietary_tags ?? [],
+            'dietary_tags' => $data['dietary_tags'] ?? [],
         ]);
 
         return response()->json([
             'token' => $user->createToken('auth_token')->plainTextToken,
-            'user'  => $user,
+            'user'  => new UserResource($user),
         ], 201);
     }
 
@@ -48,8 +50,8 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $user->createToken('auth_token')->plainTextToken,
-            'user'  => $user,
-        ]);
+            'user'  => new UserResource($user),
+        ], 200);
     }
 
     public function logout(Request $request)
