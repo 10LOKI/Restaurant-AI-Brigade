@@ -7,11 +7,13 @@ use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Plate;
 use App\Models\Recommendation;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function stats()
+    public function stats(Request $request)
     {
+        $this -> authorize('admin');
         $mostRecommended = Recommendation::where('status', 'ready')
             ->selectRaw('plate_id, AVG(score) as avg_score')
             ->groupBy('plate_id')

@@ -16,7 +16,8 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     protected $attributes = ['role' => 'client',
-    'dietary_tags' => []];
+    'dietary_tags' => '[]',
+    ];
     
     protected function casts(): array
     {
